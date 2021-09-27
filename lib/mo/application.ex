@@ -7,18 +7,12 @@ defmodule Mo.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Telemetry supervisor
       MoWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Mo.PubSub},
-      # Start the Endpoint (http/https)
-      MoWeb.Endpoint
-      # Start a worker by calling: Mo.Worker.start_link(arg)
-      # {Mo.Worker, arg}
+      MoWeb.Endpoint,
+      Mo.GameSupervisor
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Mo.Supervisor]
     Supervisor.start_link(children, opts)
   end
