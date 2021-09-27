@@ -17,6 +17,7 @@ defmodule MoWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/game", GameController, :render_board
   end
 
   # Other scopes may use custom stacks.

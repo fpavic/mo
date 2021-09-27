@@ -1,36 +1,24 @@
-/* This file is for your main application css. */
-@import "./phoenix.css";
+body{
+  margin: auto;
+  max-width: 750px;
+  padding: 1em;
+}
 
-/* Alerts and form errors */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+.board{
+  padding-bottom: 100%;
+  width: 100%;
+  margin: 1em 0;
 }
-.alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-.alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-}
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-.alert p {
-  margin-bottom: 0;
-}
-.alert:empty {
-  display: none;
-}
-.invalid-feedback {
-  color: #a94442;
+
+.field{
+  background: transparent;
+  font-size: 13px;
   display: block;
-  margin: -1rem 0 2rem;
+  float: left;
+  margin: 0;
+  padding: 0 0 calc(100%/9) 0;
+  width: calc(100%/9);
+  height: 1px;
+  position: relative;
+  opacity: 0.8;
 }

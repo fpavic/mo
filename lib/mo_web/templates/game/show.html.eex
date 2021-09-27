@@ -1,0 +1,5 @@
+<div class="board">
+  <%= Enum.map(@positions, fn position -> %>
+    <%= raw make_field(position) %>
+  <% end) %>
+</div>
