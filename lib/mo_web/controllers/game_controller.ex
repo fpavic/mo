@@ -1,6 +1,13 @@
 defmodule MoWeb.GameController do
   use MoWeb, :controller
 
+  def move(conn, %{"command" => command}) do
+    player = get_session(conn, :hero_name)
+    Mo.Player.move(player, command)
+
+    text conn, "OK"
+  end
+
   def render_board(conn, params) do
     conn =
       case get_session(conn, :hero_name) do

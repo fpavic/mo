@@ -37,7 +37,17 @@ defmodule Mo.Game do
     {:reply, state.fields, state}
   end
 
-  def handle_cast({:hero_placed, hero_state}, state) do
+  def handle_call({:valid_move?, player, direction}, _from, state) do
+    new_position = calculate_new_position(player.position, direction)
+
+    if Enum.at(state.fields, new_position) != :wall do
+      {:reply, true, state}
+    else
+      {:reply, false, state}
+    end
+  end
+
+  def handle_call({:place_hero, hero_state}, _from, state) do
     wanted_field = state.fields |> Enum.at(hero_state.position)
 
     new_state =
@@ -53,7 +63,16 @@ defmodule Mo.Game do
         state
       end
 
-    {:noreply, new_state}
+    {:reply, new_state, new_state}
+  end
+
+  def handle_call({:remove_hero, hero_state}, _from, state) do
+    field = Enum.at(state.fields, hero_state.position)
+    updated_field = List.delete(field, hero_state)
+    new_fields_state = List.replace_at(state.fields, hero_state.position, updated_field)
+    new_state = %State{fields: new_fields_state}
+
+    {:reply, new_state, new_state}
   end
 
   def fetch_free_positions() do
@@ -64,7 +83,20 @@ defmodule Mo.Game do
     GenServer.call(__MODULE__, :current_positions)
   end
 
-  def notify(:hero_placed, hero_state) do
-    GenServer.cast(__MODULE__, {:hero_placed, hero_state})
+  def valid_move?(player, direction) do
+    GenServer.call(__MODULE__, {:valid_move?, player, direction})
   end
+
+  def notify(:place_hero, hero_state) do
+    GenServer.call(__MODULE__, {:place_hero, hero_state})
+  end
+
+  def notify(:remove_hero, hero_state) do
+    GenServer.call(__MODULE__, {:remove_hero, hero_state})
+  end
+
+  defp calculate_new_position(position, "up"), do: position - 9
+  defp calculate_new_position(position, "down"), do: position + 9
+  defp calculate_new_position(position, "left"), do: position - 1
+  defp calculate_new_position(position, "right"), do: position + 1
 end

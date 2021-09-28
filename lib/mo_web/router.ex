@@ -5,7 +5,6 @@ defmodule MoWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
-    plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
 
@@ -18,6 +17,7 @@ defmodule MoWeb.Router do
 
     get "/", PageController, :index
     get "/game", GameController, :render_board
+    post "/move", GameController, :move
   end
 
   # Other scopes may use custom stacks.

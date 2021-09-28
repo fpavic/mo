@@ -3,3 +3,25 @@
     <%= raw make_field(field, @current_player_name) %>
   <% end) %>
 </div>
+
+<div class="command-panel">
+  <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+
+  <form action="move" method="post" target="dummyframe">
+    <button class="command" name="command" value="left">LEFT</button>
+  </form>
+  <form action="move" method="post" target="dummyframe">
+    <button class="command" name="command" value="down">DOWN</button>
+  </form>
+  <form action="move" method="post" target="dummyframe">
+    <button class="command" name="command" value="right">RIGHT</button>
+  </form>
+  <form action="move" method="post" target="dummyframe">
+    <button class="command" name="command" value="up">UP</button>
+  </form>
+  <form action="move" method="post" target="dummyframe">
+    <button class="command" name="command" value="attack">ATTACK</button>
+  </form>
+</div>
+
+<script>setTimeout(function(){window.location.reload(1);}, 1000);</script>
