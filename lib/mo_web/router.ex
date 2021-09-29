@@ -18,6 +18,7 @@ defmodule MoWeb.Router do
     get "/", PageController, :index
     get "/game", GameController, :render_board
     post "/move", GameController, :move
+    post "/reset", GameController, :reset
   end
 
   # Other scopes may use custom stacks.

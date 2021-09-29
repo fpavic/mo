@@ -8,6 +8,13 @@ defmodule MoWeb.GameController do
     text conn, "OK"
   end
 
+  def reset(conn, _) do
+    conn = delete_session(conn, :hero_name)
+    Supervisor.stop(Mo.GameSupervisor)
+
+    text conn, "OK"
+  end
+
   def render_board(conn, params) do
     conn =
       case get_session(conn, :hero_name) do

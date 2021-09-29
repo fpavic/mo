@@ -33,6 +33,7 @@ defmodule Mo.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:mimic, "~> 1.5", only: :test},
       {:phoenix, "~> 1.5.12"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

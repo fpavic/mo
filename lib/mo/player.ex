@@ -85,7 +85,15 @@ defmodule Mo.Player do
   end
 
   def kill(player) do
-    GenServer.call({:via, Registry, {Mo.PlayerRegistry, player.name}}, :kill_player)
-    GenServer.call({:via, Registry, {Mo.PlayerRegistry, player.name}}, :revive)
+    GenServer.call(via_name(player.name), :kill_player)
+    GenServer.call(via_name(player.name), :revive)
+  end
+
+  def state(player_name) do
+    GenServer.call(via_name(player_name), :state)
+  end
+
+  defp via_name(name) do
+    {:via, Registry, {Mo.PlayerRegistry, name}}
   end
 end

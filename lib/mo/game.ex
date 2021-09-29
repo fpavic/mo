@@ -111,8 +111,14 @@ defmodule Mo.Game do
   end
 
   def attack_hero_vicinity(hero_state) do
-    current_positions()
+    positions = current_positions()
+
+    positions
     |> heroes_in_vicinity(hero_state.position)
+    |> Enum.each(&Mo.Player.kill(&1))
+
+    positions
+    |> heroes_on_current_field(hero_state)
     |> Enum.each(&Mo.Player.kill(&1))
   end
 
@@ -126,5 +132,11 @@ defmodule Mo.Game do
     |> Enum.map(&Enum.at(fields, &1))
     |> Enum.filter(&(&1 != :wall))
     |> Enum.concat()
+  end
+
+  defp heroes_on_current_field(fields, hero) do
+    fields
+    |> Enum.at(hero.position)
+    |> Enum.filter(& &1.name != hero.name)
   end
 end

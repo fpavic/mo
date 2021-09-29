@@ -22,6 +22,10 @@
   <form action="move" method="post" target="dummyframe">
     <button class="command" name="command" value="attack">ATTACK</button>
   </form>
+
+  <form action="reset" method="post" target="dummyframe">
+    <button class="reset-command">RESET</button>
+  </form>
 </div>
 
 <script>setTimeout(function(){window.location.reload(1);}, 1000);</script>
