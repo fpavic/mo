@@ -68,7 +68,18 @@ defmodule Mo.Game do
 
   def handle_call({:remove_hero, hero_state}, _from, state) do
     field = Enum.at(state.fields, hero_state.position)
-    updated_field = List.delete(field, hero_state)
+    updated_field = Enum.filter(field, & &1.name != hero_state.name)
+    new_fields_state = List.replace_at(state.fields, hero_state.position, updated_field)
+    new_state = %State{fields: new_fields_state}
+
+    {:reply, new_state, new_state}
+  end
+
+  def handle_call({:update_hero, hero_state}, _from, state) do
+    field = Enum.at(state.fields, hero_state.position)
+    list = List.delete(field, hero_state)
+    updated_field = [hero_state | list]
+
     new_fields_state = List.replace_at(state.fields, hero_state.position, updated_field)
     new_state = %State{fields: new_fields_state}
 
@@ -95,8 +106,25 @@ defmodule Mo.Game do
     GenServer.call(__MODULE__, {:remove_hero, hero_state})
   end
 
+  def notify(:update_hero, hero_state) do
+    GenServer.call(__MODULE__, {:update_hero, hero_state})
+  end
+
+  def attack_hero_vicinity(hero_state) do
+    current_positions()
+    |> heroes_in_vicinity(hero_state.position)
+    |> Enum.each(&Mo.Player.kill(&1))
+  end
+
   defp calculate_new_position(position, "up"), do: position - 9
   defp calculate_new_position(position, "down"), do: position + 9
   defp calculate_new_position(position, "left"), do: position - 1
   defp calculate_new_position(position, "right"), do: position + 1
+
+  defp heroes_in_vicinity(fields, position) do
+    [position - 10, position - 9, position - 8, position - 1, position + 1, position + 8, position + 9, position + 10]
+    |> Enum.map(&Enum.at(fields, &1))
+    |> Enum.filter(&(&1 != :wall))
+    |> Enum.concat()
+  end
 end

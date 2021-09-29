@@ -26,11 +26,20 @@ defmodule Mo.Player do
     {:reply, state, state}
   end
 
-  def handle_call({move, "attack"}, _from, player_state) do
+  def handle_call(:kill_player, _from, player_state) do
+    new_state = Map.put(player_state, :status, :dead)
+    Mo.Game.notify(:update_hero, new_state)
+
+    {:reply, new_state, new_state}
+  end
+
+  def handle_call({:move, "attack"}, _from, %State{status: :alive} = player_state) do
+    Mo.Game.attack_hero_vicinity(player_state)
+
     {:reply, player_state, player_state}
   end
 
-  def handle_call({:move, direction}, _from, player_state) do
+  def handle_call({:move, direction}, _from, %State{status: :alive} = player_state) do
     if Mo.Game.valid_move?(player_state, direction) do
       new_player_state = move_player(player_state, direction)
 
@@ -43,6 +52,24 @@ defmodule Mo.Player do
     end
   end
 
+  def handle_call(:revive, _from, state) do
+    Process.send_after(self(), :revive, 5000)
+
+    {:reply, state, state}
+  end
+
+  def handle_call(_, _from, state), do: {:reply, state, state}
+
+  def handle_info(:revive, state) do
+    new_state = %State{name: state.name, position: calculate_position(), status: :alive}
+    Mo.Game.notify(:remove_hero, state)
+    Mo.Game.notify(:place_hero, new_state)
+
+    {:noreply, new_state}
+  end
+
+  def handle_info(_, state), do: {:noreply, state}
+
   defp calculate_position() do
     Mo.Game.fetch_free_positions()
     |> Enum.random()
@@ -53,7 +80,12 @@ defmodule Mo.Player do
   defp move_player(%State{position: position} = state, "left"), do: Map.put(state, :position, position - 1)
   defp move_player(%State{position: position} = state, "right"), do: Map.put(state, :position, position + 1)
 
-  def move(player, direction) do
-    GenServer.call({:via, Registry, {Mo.PlayerRegistry, player}}, {:move, direction})
+  def move(player_name, direction) do
+    GenServer.call({:via, Registry, {Mo.PlayerRegistry, player_name}}, {:move, direction})
+  end
+
+  def kill(player) do
+    GenServer.call({:via, Registry, {Mo.PlayerRegistry, player.name}}, :kill_player)
+    GenServer.call({:via, Registry, {Mo.PlayerRegistry, player.name}}, :revive)
   end
 end
