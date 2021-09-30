@@ -21,3 +21,12 @@ Now you can visit [`localhost:4000/game?name=Boban`](http://localhost:4000/game?
 
 ## To run the tests
   * Run `mix tests` command
+
+## To deploy the app on Gigalixir
+
+Gigalixir auto-detects that we want to use Elixir Releases as we have a config/releases.exs file.
+
+  * In the app directory run `APP_NAME=$(gigalixir create)`
+  * Verify that the app was created, by running `gigalixir apps`
+  * Verify that a git remote was created by running `git remote -v`
+  * Build and deploy the app by running `git push gigalixir`
